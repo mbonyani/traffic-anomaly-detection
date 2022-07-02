@@ -26,6 +26,8 @@ import seaborn as sns
 
 import xbosmodel
 
+import hbosmodel
+
 from functions import plot_top_n,my_plot_precision_recall_curve, confusion_matrix_plot,download_drive, auc_plot
 
 import torch
@@ -523,6 +525,131 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
 
       df_all.loc[numb]= [f"{model_name_5}",tn, fp, fn, tp, accuracy_5, precision_5,recall_5,
                          f1_score_5,"{:.3%}".format(auc_5),"{:.2f}".format(average_precision_5),"{:.2f}".format(train_time_xbos)]
+
+      numb = len(df_all)+1
+
+    else:
+      pass
+      
+      
+      
+      
+      
+    
+    
+    
+    if 'HBOS' in list_of_models:
+
+      print('******************************************************************HBOS')
+      import time
+      #df_2_exist = False
+
+      if number_of_unique != None:
+        df_2 = df.copy()
+        #df_2_exist = True
+
+        #remove columns with constant numbers or those columns with unique numbers of < number_of_unique
+        cols = df_2.columns
+        for i in range(len(cols)):
+          if cols[i] != name_target:
+            m = df_2[cols[i]].value_counts()
+            m = np.array(m)
+            if len(m) < number_of_unique:
+              print(f'len cols {i}:',len(m), 'droped')
+              #print('drope')
+              column_name = cols[i]
+              df_2=df_2.drop(columns= column_name)
+
+        X_2, y_2= df_2.loc[:, df_2.columns!= name_target], df_2[name_target]
+        X_train_2, X_test_2, y_train_2, y_test_2 = train_test_split(X_2, y_2, test_size=0.3, random_state=120,stratify=y_2)
+          
+        model_name_5h = 'HBOS'
+        #create HBOS model
+        clf = hbosmodel.HBOS(n_clusters=15,max_iter=1)
+        start = time.time()
+        # train HBOS model
+        clf.fit(X_train_2)
+        
+
+        #predict model
+        y_test_pred = clf.predict(X_test_2)
+        y_test_scores_hbos = clf.fit_predict(X_test_2)
+        stop = time.time()
+        train_time_hbos = stop - start
+        print(f"Training time: {stop - start}s")
+
+      else:
+
+        model_name_5h = 'HBOS'
+        #create XBOS model
+        clf = hbosmodel.HBOS(n_clusters=15,max_iter=1)
+        start = time.time()
+        # train XBOS model
+        clf.fit(X_train)
+
+        #predict model
+        y_test_pred = clf.predict(X_test)
+        y_test_scores_hbos = clf.fit_predict(X_test)
+        stop = time.time()
+        train_time_hbos = stop - start
+        print(f"Training time: {stop - start}s")
+
+      #****************************************
+      predictions = [round(value) for value in y_test_pred]
+      accuracy = accuracy_score(y_test, predictions)
+      #print("Accuracy: %.2f%%" % (accuracy * 100.0))
+      accuracy_5 = accuracy * 100.0
+
+      for i in range(0,len(predictions)):
+        if predictions[i] > 0.5:
+          predictions[i]=1
+        else:
+          predictions[i]=0
+
+      predictions_5 =predictions
+
+      #AUC score
+      auc_5 = metrics.roc_auc_score(y_test, predictions_5)
+      #{:.3%}".format(auc_1)
+
+      # AP score
+      average_precision_5 = metrics.average_precision_score(y_test, predictions_5)
+
+      # calculate prediction,recall, f1-score
+      from sklearn.metrics import f1_score,recall_score,precision_score
+      precision = precision_score(y_test, predictions, average='weighted', labels=np.unique(predictions))
+      recall = recall_score(y_test, predictions, average='weighted', labels=np.unique(predictions))
+      f1_score = f1_score(y_test, predictions, average='weighted', labels=np.unique(predictions))
+      f1_score_5 = np.mean(f1_score)
+      precision_5 = np.mean(precision)
+      recall_5 = np.mean(recall)
+
+      # evaluate the classification_report
+      print(classification_report(y_test, predictions_5))
+
+      # evaluate the confusion_matrix
+      #cf_matrix =confusion_matrix(y_test, predictions)
+
+      tn, fp, fn, tp = confusion_matrix(y_test, predictions).ravel()
+
+      #*******************************************confusion matrix Plot
+
+      confusion_matrix_plot(y_test,predictions_5,model_name_5,contamination,percentage_values)
+
+      #************************************************
+
+
+      file_name = '/content/'+ f'{model_name_5}' + '.pkl'
+      import joblib
+      with open(file_name, 'wb') as f:
+        joblib.dump(clf, f)
+
+      # import pickle
+      # with open(file_name, 'wb') as f:
+      #   pickle.dump(clf, f)
+
+      df_all.loc[numb]= [f"{model_name_5h}",tn, fp, fn, tp, accuracy_5, precision_5,recall_5,
+                         f1_score_5,"{:.3%}".format(auc_5),"{:.2f}".format(average_precision_5),"{:.2f}".format(train_time_hbos)]
 
       numb = len(df_all)+1
 
