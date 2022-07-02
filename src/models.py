@@ -565,7 +565,7 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
           
         model_name_5h = 'HBOS'
         #create HBOS model
-        clf = hbosmodel.HBOS(n_clusters=15,max_iter=1)
+        clf = hbosmodel.HBOS()
         start = time.time()
         # train HBOS model
         clf.fit(X_train_2)
@@ -581,10 +581,10 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
       else:
 
         model_name_5h = 'HBOS'
-        #create XBOS model
-        clf = hbosmodel.HBOS(n_clusters=15,max_iter=1)
+        #create HBOS model
+        clf = hbosmodel.HBOS()
         start = time.time()
-        # train XBOS model
+        # train HBOS model
         clf.fit(X_train)
 
         #predict model
