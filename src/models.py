@@ -2167,10 +2167,12 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
         clf = hbosmodel.HBOS()
         start = time.time()
         # train XBOS model
+        X_train_2.reset_index(inplace=True,drop=True)
         clf.fit(X_train_2)
         
 
         #predict model
+        X_test_2.reset_index(inplace=True,drop=True)
         y_test_pred = clf.predict(X_test_2)
         y_test_scores_hbos = clf.fit_predict(X_test_2)
         stop = time.time()
@@ -2181,7 +2183,7 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
 
         model_name_5 = 'HBOS'
         #create HBOS model
-        clf = hbosmodel.HBOS(n_clusters=15,max_iter=1)
+        clf = hbosmodel.HBOS()
         start = time.time()
         # train HBOS model
         clf.fit(X_train)

@@ -11,6 +11,11 @@ import math
 from pandas import DataFrame
 import datetime
 from itertools import repeat
+import math
+import numpy as np
+from pandas import DataFrame
+import datetime
+from itertools import repeat
 
 class HBOS:
         
@@ -61,9 +66,7 @@ class HBOS:
         for attrIndex in range(len(sorted_data.columns)):
             attr = sorted_data.columns[ attrIndex ]
             last = 0
-            # print("attr:::::::",attr)
-
-            bin_start = sorted_data.loc[1, attr ]
+            bin_start = sorted_data[ attr ][ 0 ]
             if self.mode_array[ attrIndex ] == 'dynamic binwidth':
                 if self.nominal_array[ attrIndex ] == True:
                     while last < len(sorted_data) - 1:
@@ -164,7 +167,7 @@ class HBOS:
         attr = sortedData.columns[ attrIndex ]
         
         # create new _bin
-        _bin = HistogramBin(sortedData.loc[ first_index+1,attr ], 0, 0)
+        _bin = HistogramBin(sortedData[ attr ][ first_index ], 0, 0)
             
         # check if an end of the data is near
         if first_index + values_per_bin < len(sortedData):
@@ -188,7 +191,7 @@ class HBOS:
         
         cursor = first_index
         for i in range(first_index + 1, last_index):
-            if sortedData.loc[i, attr ] == sortedData.loc[cursor, attr ]:
+            if sortedData[ attr ][ i ] == sortedData[ attr ][ cursor ]:
                 _bin.add_quantitiy(1)
                 cursor = cursor + 1
             else:
@@ -200,7 +203,7 @@ class HBOS:
                     
         # continue to put values in the _bin until a new values arrive
         for i in range(cursor + 1, len(sortedData)):
-            if sortedData.loc[i, attr ] == sortedData.loc[cursor, attr ]:
+            if sortedData[ attr ][ i ] == sortedData[ attr ][ cursor ]:
                 _bin.quantity = _bin.quantity + 1
                 cursor = cursor + 1
             else:
@@ -208,12 +211,12 @@ class HBOS:
                 
         # adjust range of the bins
         if cursor + 1 < len(sortedData):
-            _bin.range_to = sortedData.loc[ cursor + 1,attr ]
+            _bin.range_to = sortedData[ attr ][ cursor + 1 ]
         else:  # last data
             if isNominal:
-                _bin.range_to = sortedData.loc[ len(sortedData) - 1,attr ] + 1
+                _bin.range_to = sortedData[ attr ][ len(sortedData) - 1 ] + 1
             else:
-                _bin.range_to = sortedData.loc[len(sortedData) - 1, attr ]
+                _bin.range_to = sortedData[ attr ][ len(sortedData) - 1 ]
                 
         # save _bin
         if _bin.range_to - _bin.range_from > 0:
@@ -236,7 +239,7 @@ class HBOS:
         attr = sorted_data.columns[ attrIndex ]
         _bin = HistogramBin(bin_start, bin_start + binwidth, 0)
         if last_bin == True:
-            _bin = HistogramBin(bin_start, sorted_data.loc[ len(sorted_data) - 1,attr ], 0)
+            _bin = HistogramBin(bin_start, sorted_data[ attr ][ len(sorted_data) - 1 ], 0)
         
         last = first_index - 1
         cursor = first_index
@@ -244,7 +247,7 @@ class HBOS:
         while True:
             if cursor >= len(sorted_data):
                 break
-            if sorted_data.loc[ cursor,attr ] > _bin.range_to:
+            if sorted_data[ attr ][ cursor ] > _bin.range_to:
                 break
             _bin.quantity = _bin.quantity + 1
             last = cursor
