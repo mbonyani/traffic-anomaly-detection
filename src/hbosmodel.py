@@ -188,7 +188,7 @@ class HBOS:
         
         cursor = first_index
         for i in range(first_index + 1, last_index):
-            if sortedData[ attr ][ i ] == sortedData[ attr ][ cursor ]:
+            if sortedData.loc[i, attr ] == sortedData.loc[cursor, attr ]:
                 _bin.add_quantitiy(1)
                 cursor = cursor + 1
             else:
