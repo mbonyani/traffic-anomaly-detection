@@ -411,6 +411,95 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
 
     else:
       pass
+      
+      
+      
+      
+      
+        #****************************************************************LOF
+    if 'CBLOF_pyod' in list_of_models:
+
+      print('******************************************************************CBLOF_pyod')
+      from pyod.models.cblof import CBLOF
+      import time
+
+
+      model_name_4cblof = 'CBLOF_pyod'
+
+      # train LOF detector
+      clf_name = 'CBLOF_pyod'
+      clf = CBLOF(contamination= contamination)
+      start = time.time()
+      clf.fit(X_train)
+
+      # get the prediction on the test data
+      y_test_pred = clf.predict(X_test)  # outlier labels (0 or 1)
+      y_test_scores_cblof = -clf.decision_function(X_test)  # outlier scores
+
+      stop = time.time()
+      train_time_cblof = stop - start
+      print(f"Training time: {stop - start}s")
+
+      #****************************************
+      predictions = [round(value) for value in y_test_pred]
+      accuracy = accuracy_score(y_test, predictions)
+      #print("Accuracy: %.2f%%" % (accuracy * 100.0))
+      accuracy_4cblof = accuracy * 100.0
+
+      for i in range(0,len(predictions)):
+        if predictions[i] > 0.5:
+          predictions[i]=1
+        else:
+          predictions[i]=0
+
+      predictions_4cblof = predictions
+
+      #AUC score
+      auc_4cblof = metrics.roc_auc_score(y_test, predictions_4cblof)
+      #{:.3%}".format(auc_1)
+
+      # AP score
+      average_precision_4cblof = metrics.average_precision_score(y_test, predictions_4cblof)
+
+      # calculate prediction,recall, f1-score
+      from sklearn.metrics import f1_score,recall_score,precision_score
+      precision = precision_score(y_test, predictions, average='weighted', labels=np.unique(predictions))
+      recall = recall_score(y_test, predictions, average='weighted', labels=np.unique(predictions))
+      f1_score = f1_score(y_test, predictions, average='weighted', labels=np.unique(predictions))
+      f1_score_4cblof = np.mean(f1_score)
+      precision_4cblof = np.mean(precision)
+      recall_4cblof = np.mean(recall)
+
+      # evaluate the classification_report
+      print(classification_report(y_test, predictions_4cblof))
+
+      # evaluate the confusion_matrix
+      cf_matrix =confusion_matrix(y_test, predictions)
+      tn, fp, fn, tp = confusion_matrix(y_test, predictions).ravel()
+
+      #*******************************************confusion matrix Plot
+
+      confusion_matrix_plot(y_test,predictions_4cblof,model_name_4cblof,contamination,percentage_values)
+
+      #************************************************
+
+
+      file_name = '/content/'+ f'{model_name_4cblof}' + '.pkl'
+      import joblib
+      with open(file_name, 'wb') as f:
+        joblib.dump(clf, f)
+
+      # import pickle
+      # with open(file_name, 'wb') as f:
+      #   pickle.dump(clf, f)
+
+      df_all.loc[numb]= [f"{model_name_4cblof}",tn, fp, fn, tp, accuracy_4cblof, precision_4cblof,recall_4cblof,
+                         f1_score_4cblof,"{:.3%}".format(auc_4cblof),"{:.2f}".format(average_precision_4cblof),"{:.2f}".format(train_time_cblof)]
+
+      numb = len(df_all)+1
+
+    else:
+      pass
 
     #****************************************************************XBOS
     if 'XBOS' in list_of_models:
@@ -598,7 +687,7 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
       predictions = [round(value) for value in y_test_pred]
       accuracy = accuracy_score(y_test, predictions)
       #print("Accuracy: %.2f%%" % (accuracy * 100.0))
-      accuracy_5 = accuracy * 100.0
+      accuracy_5h = accuracy * 100.0
 
       for i in range(0,len(predictions)):
         if predictions[i] > 0.5:
@@ -606,23 +695,23 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
         else:
           predictions[i]=0
 
-      predictions_5 =predictions
+      predictions_5h =predictions
 
       #AUC score
-      auc_5 = metrics.roc_auc_score(y_test, predictions_5)
+      auc_5h = metrics.roc_auc_score(y_test, predictions_5h)
       #{:.3%}".format(auc_1)
 
       # AP score
-      average_precision_5 = metrics.average_precision_score(y_test, predictions_5)
+      average_precision_5h = metrics.average_precision_score(y_test, predictions_5)
 
       # calculate prediction,recall, f1-score
       from sklearn.metrics import f1_score,recall_score,precision_score
       precision = precision_score(y_test, predictions, average='weighted', labels=np.unique(predictions))
       recall = recall_score(y_test, predictions, average='weighted', labels=np.unique(predictions))
       f1_score = f1_score(y_test, predictions, average='weighted', labels=np.unique(predictions))
-      f1_score_5 = np.mean(f1_score)
-      precision_5 = np.mean(precision)
-      recall_5 = np.mean(recall)
+      f1_score_5h = np.mean(f1_score)
+      precision_5h = np.mean(precision)
+      recall_5h = np.mean(recall)
 
       # evaluate the classification_report
       print(classification_report(y_test, predictions_5))
@@ -634,12 +723,12 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
 
       #*******************************************confusion matrix Plot
 
-      confusion_matrix_plot(y_test,predictions_5,model_name_5,contamination,percentage_values)
+      confusion_matrix_plot(y_test,predictions_5h,model_name_5h,contamination,percentage_values)
 
       #************************************************
 
 
-      file_name = '/content/'+ f'{model_name_5}' + '.pkl'
+      file_name = '/content/'+ f'{model_name_5h}' + '.pkl'
       import joblib
       with open(file_name, 'wb') as f:
         joblib.dump(clf, f)
@@ -648,8 +737,8 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
       # with open(file_name, 'wb') as f:
       #   pickle.dump(clf, f)
 
-      df_all.loc[numb]= [f"{model_name_5h}",tn, fp, fn, tp, accuracy_5, precision_5,recall_5,
-                         f1_score_5,"{:.3%}".format(auc_5),"{:.2f}".format(average_precision_5),"{:.2f}".format(train_time_hbos)]
+      df_all.loc[numb]= [f"{model_name_5h}",tn, fp, fn, tp, accuracy_5h, precision_5h,recall_5h,
+                         f1_score_5h,"{:.3%}".format(auc_5h),"{:.2f}".format(average_precision_5h),"{:.2f}".format(train_time_hbos)]
 
       numb = len(df_all)+1
 
@@ -1411,6 +1500,11 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
       fpr, tpr, thresh = metrics.roc_curve(y_test, predictions_4)
       auc = metrics.roc_auc_score(y_test, predictions_4)
       plt.plot(fpr,tpr,marker='.',label="LOF_pyod, auc="+str("{:.3%}".format(auc)))
+      
+    if 'CBLOF_pyod' in list_of_models:
+      fpr, tpr, thresh = metrics.roc_curve(y_test, predictions_4cblof)
+      auc = metrics.roc_auc_score(y_test, predictions_4cblof)
+      plt.plot(fpr,tpr,marker='.',label="CBLOF_pyod, auc="+str("{:.3%}".format(auc)))
 
     if 'XBOS' in list_of_models: 
       if number_of_unique != None:
@@ -1422,6 +1516,17 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
         fpr, tpr, thresh = metrics.roc_curve(y_test, predictions_5)
         auc = metrics.roc_auc_score(y_test, predictions_5)
         plt.plot(fpr,tpr,marker='.',label="XBOS, auc="+str("{:.3%}".format(auc)))
+
+    if 'HBOS' in list_of_models: 
+      if number_of_unique != None:
+        fpr, tpr, thresh = metrics.roc_curve(y_test_2, predictions_5h)
+        auc = metrics.roc_auc_score(y_test_2, predictions_5h)
+        plt.plot(fpr,tpr,marker='.',label="HBOS, auc="+str("{:.3%}".format(auc)))
+
+      else:
+        fpr, tpr, thresh = metrics.roc_curve(y_test, predictions_5h)
+        auc = metrics.roc_auc_score(y_test, predictions_5h)
+        plt.plot(fpr,tpr,marker='.',label="HBOS, auc="+str("{:.3%}".format(auc)))
 
     if 'KNN_sklearn' in list_of_models:
       fpr, tpr, thresh = metrics.roc_curve(y_test, predictions_6)
@@ -1510,7 +1615,11 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
       average_precision_4 = metrics.average_precision_score(y_test, y_test_scores_lof)
       disp_4.ax_.set_title('2-class Precision-Recall curve')
 
-
+    if 'LOF_pyod' in list_of_models:
+      disp_4 = my_plot_precision_recall_curve(y_test, predictions_4cblof,"CBLOF_pyod")
+      average_precision_4 = metrics.average_precision_score(y_test, y_test_scores_cblof)
+      disp_4.ax_.set_title('2-class Precision-Recall curve')
+      
     if 'XBOS' in list_of_models:
       if number_of_unique != None:
         disp_5 = my_plot_precision_recall_curve(y_test_2, predictions_5,"XBOS")
@@ -1523,7 +1632,18 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
         average_precision_5 = metrics.average_precision_score(y_test, y_test_scores_xbos)
         disp_5.ax_.set_title('2-class Precision-Recall curve')
 
+    if 'HBOS' in list_of_models:
+      if number_of_unique != None:
+        disp_5 = my_plot_precision_recall_curve(y_test_2, predictions_5h,"HBOS")
+        average_precision_5 = metrics.average_precision_score(y_test_2, y_test_scores_hbos)
+        disp_5.ax_.set_title('2-class Precision-Recall curve')
 
+
+      else:
+        disp_5 = my_plot_precision_recall_curve(y_test, predictions_5h,"HBOS")
+        average_precision_5 = metrics.average_precision_score(y_test, y_test_scores_hbos)
+        disp_5.ax_.set_title('2-class Precision-Recall curve')
+        
     if 'KNN_sklearn' in list_of_models:
       disp_6 = my_plot_precision_recall_curve(y_test, predictions_6,"KNN_sklearn")
       average_precision_6 = metrics.average_precision_score(y_test, y_test_pred_6)
@@ -2013,6 +2133,109 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
 
     else:
       pass
+
+
+
+    if 'CBLOF_pyod' in list_of_models:
+
+      print('******************************************************************CBLOF_pyod')
+      from pyod.models.cblof import CBLOF
+      import time
+
+      df_lof = df.copy()
+
+      #determine which class is normal (is not anomaly)
+      label = np.array(df_lof[name_target])
+
+      # #replace labels with 0 and 1
+      label = np.where(label == 0, 1 ,0)
+      df_lof[name_target]=label 
+
+      X_lof, y_lof = df_lof.loc[:, df_lof.columns!= name_target], df_lof[name_target]
+      seed = 120
+      test_size = 0.3
+      X_train_cblof, X_test_cblof, y_train_cblof, y_test_cblof = train_test_split(X_lof, y_lof, test_size=test_size, random_state=seed,stratify=y_lof)
+
+      model_name_4cblof = 'CBLOF_pyod'
+
+      # train LOF detector
+      clf_name = 'CBLOF_pyod'
+      clf = LOF(contamination= contamination)
+      start = time.time()
+      clf.fit(X_train_cblof)
+
+      # get the prediction on the test data
+      y_test_pred = clf.predict(X_test_cblof)  # outlier labels (0 or 1)
+      y_test_scores_cblof = clf.decision_function(X_test_cblof)  # outlier scores
+
+      stop = time.time()
+      train_time_cblof = stop - start
+      print(f"Training time: {stop - start}s")
+
+      #****************************************
+      predictions = [round(value) for value in y_test_pred]
+      accuracy = accuracy_score(y_test_lof, predictions)
+      #print("Accuracy: %.2f%%" % (accuracy * 100.0))
+      accuracy_4cblof = accuracy * 100.0
+
+      for i in range(0,len(predictions)):
+        if predictions[i] > 0.5:
+          predictions[i]=1
+        else:
+          predictions[i]=0
+
+      predictions_4cblof = predictions
+
+      #AUC score
+      auc_4cblof = metrics.roc_auc_score(y_test_lof, predictions_4cblof)
+      #{:.3%}".format(auc_1)
+
+      # AP score
+      average_precision_4cblof = metrics.average_precision_score(y_test_lof, predictions_4cblof)
+
+      # calculate prediction,recall, f1-score
+      from sklearn.metrics import f1_score,recall_score,precision_score
+      precision = precision_score(y_test_lof, predictions, average='weighted', labels=np.unique(predictions))
+      recall = recall_score(y_test_lof, predictions, average='weighted', labels=np.unique(predictions))
+      f1_score = f1_score(y_test_lof, predictions, average='weighted', labels=np.unique(predictions))
+      f1_score_4cblof = np.mean(f1_score)
+      precision_4cblof = np.mean(precision)
+      recall_4cblof = np.mean(recall)
+
+      # evaluate the classification_report
+      print(classification_report(y_test_lof, predictions_4cblof))
+
+      # evaluate the confusion_matrix
+      cf_matrix =confusion_matrix(y_test_lof, predictions)
+      tn, fp, fn, tp = confusion_matrix(y_test_lof, predictions).ravel()
+
+      #*******************************************confusion matrix Plot
+
+      confusion_matrix_plot(y_test_lof,predictions_4cblof,model_name_4cblof,contamination,percentage_values)
+
+      #************************************************
+
+
+      file_name = '/content/'+ f'{model_name_4cblof}' + '.pkl'
+      import joblib
+      with open(file_name, 'wb') as f:
+        joblib.dump(clf, f)
+
+      # import pickle
+      # with open(file_name, 'wb') as f:
+      #   pickle.dump(clf, f)
+
+      df_all.loc[numb]= [f"{model_name_4cblof}",tn, fp, fn, tp, accuracy_4cblof, precision_4cblof,recall_4cblof,
+                         f1_score_4cblof,"{:.3%}".format(auc_4cblof),"{:.2f}".format(average_precision_4cblof),"{:.2f}".format(train_time_cblof)]
+
+      numb = len(df_all)+1
+
+    else:
+      pass
+
+
+
+
 
     #****************************************************************XBOS
     if 'XBOS' in list_of_models:
@@ -3036,6 +3259,11 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
       auc = metrics.roc_auc_score(y_test_lof, predictions_4)
       plt.plot(fpr,tpr,marker='.',label="LOF_pyod, auc="+str("{:.3%}".format(auc)))
 
+    if 'CBLOF_pyod' in list_of_models:
+      fpr, tpr, thresh = metrics.roc_curve(y_test_lof, predictions_4cblof)
+      auc = metrics.roc_auc_score(y_test_lof, predictions_4cblof)
+      plt.plot(fpr,tpr,marker='.',label="CBLOF_pyod, auc="+str("{:.3%}".format(auc)))
+
     if 'XBOS' in list_of_models: 
       if number_of_unique != None:
         fpr, tpr, thresh = metrics.roc_curve(y_test_2, predictions_5)
@@ -3145,7 +3373,12 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
       average_precision_4 = metrics.average_precision_score(y_test_lof, y_test_scores_lof)
       disp_4.ax_.set_title('2-class Precision-Recall curve')
 
-
+    if 'CBLOF_pyod' in list_of_models:
+      disp_4 = my_plot_precision_recall_curve(y_test_cblof, predictions_4cblof,"CBLOF_pyod")
+      average_precision_4 = metrics.average_precision_score(y_test_cblof, y_test_scores_cblof)
+      disp_4.ax_.set_title('2-class Precision-Recall curve')
+      
+      
     if 'XBOS' in list_of_models:
       if number_of_unique != None:
         disp_5 = my_plot_precision_recall_curve(y_test_2, predictions_5,"XBOS")
@@ -3161,13 +3394,13 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
         
     if 'HBOS' in list_of_models:
       if number_of_unique != None:
-        disp_5 = my_plot_precision_recall_curve(y_test_2, predictions_5h,"XBOS")
+        disp_5 = my_plot_precision_recall_curve(y_test_2, predictions_5h,"HBOS")
         average_precision_5 = metrics.average_precision_score(y_test_2, y_test_scores_hbos)
         disp_5.ax_.set_title('2-class Precision-Recall curve')
 
 
       else:
-        disp_5 = my_plot_precision_recall_curve(y_test, predictions_5h,"XBOS")
+        disp_5 = my_plot_precision_recall_curve(y_test, predictions_5h,"HBOS")
         average_precision_5 = metrics.average_precision_score(y_test, y_test_scores_hbos)
         disp_5.ax_.set_title('2-class Precision-Recall curve')
 
