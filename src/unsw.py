@@ -26,7 +26,7 @@ from functions import download_drive
 
 def UNSW(encoder_numeric,encoder_categoric,scaler_name,dataset_kaggle_path,dataset_dir):
 
-  dataset_name = 'beth'
+  dataset_name = 'UNSW'
   download_drive(dataset_kaggle_path,dataset_dir)
   df= pd.read_csv(f'{dataset_dir}UNSW_NB15_training-set.csv')
   #df = df.sample(frac= 0.2)
