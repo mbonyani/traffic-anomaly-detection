@@ -2160,7 +2160,7 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
 
       # train LOF detector
       clf_name = 'CBLOF_pyod'
-      clf = LOF(contamination= contamination)
+      clf = CBLOF(contamination= contamination)
       start = time.time()
       clf.fit(X_train_cblof)
 
