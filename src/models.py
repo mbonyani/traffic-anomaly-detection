@@ -2174,7 +2174,7 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
 
       #****************************************
       predictions = [round(value) for value in y_test_pred]
-      accuracy = accuracy_score(y_test_lof, predictions)
+      accuracy = accuracy_score(y_test_cblof, predictions)
       #print("Accuracy: %.2f%%" % (accuracy * 100.0))
       accuracy_4cblof = accuracy * 100.0
 
@@ -2187,31 +2187,31 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
       predictions_4cblof = predictions
 
       #AUC score
-      auc_4cblof = metrics.roc_auc_score(y_test_lof, predictions_4cblof)
+      auc_4cblof = metrics.roc_auc_score(y_test_cblof, predictions_4cblof)
       #{:.3%}".format(auc_1)
 
       # AP score
-      average_precision_4cblof = metrics.average_precision_score(y_test_lof, predictions_4cblof)
+      average_precision_4cblof = metrics.average_precision_score(y_test_cblof, predictions_4cblof)
 
       # calculate prediction,recall, f1-score
       from sklearn.metrics import f1_score,recall_score,precision_score
-      precision = precision_score(y_test_lof, predictions, average='weighted', labels=np.unique(predictions))
-      recall = recall_score(y_test_lof, predictions, average='weighted', labels=np.unique(predictions))
-      f1_score = f1_score(y_test_lof, predictions, average='weighted', labels=np.unique(predictions))
+      precision = precision_score(y_test_cblof, predictions, average='weighted', labels=np.unique(predictions))
+      recall = recall_score(y_test_cblof, predictions, average='weighted', labels=np.unique(predictions))
+      f1_score = f1_score(y_test_cblof, predictions, average='weighted', labels=np.unique(predictions))
       f1_score_4cblof = np.mean(f1_score)
       precision_4cblof = np.mean(precision)
       recall_4cblof = np.mean(recall)
 
       # evaluate the classification_report
-      print(classification_report(y_test_lof, predictions_4cblof))
+      print(classification_report(y_test_cblof, predictions_4cblof))
 
       # evaluate the confusion_matrix
-      cf_matrix =confusion_matrix(y_test_lof, predictions)
-      tn, fp, fn, tp = confusion_matrix(y_test_lof, predictions).ravel()
+      cf_matrix =confusion_matrix(y_test_cblof, predictions)
+      tn, fp, fn, tp = confusion_matrix(y_test_cblof, predictions).ravel()
 
       #*******************************************confusion matrix Plot
 
-      confusion_matrix_plot(y_test_lof,predictions_4cblof,model_name_4cblof,contamination,percentage_values)
+      confusion_matrix_plot(y_test_cblof,predictions_4cblof,model_name_4cblof,contamination,percentage_values)
 
       #************************************************
 
