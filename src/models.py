@@ -2212,11 +2212,11 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
       predictions_5h =predictions
 
       #AUC score
-      auc_5 = metrics.roc_auc_score(y_test, predictions_5h)
+      auc_5h = metrics.roc_auc_score(y_test, predictions_5h)
       #{:.3%}".format(auc_1)
 
       # AP score
-      average_precision_5 = metrics.average_precision_score(y_test, predictions_5h)
+      average_precision_5h = metrics.average_precision_score(y_test, predictions_5h)
 
       # calculate prediction,recall, f1-score
       from sklearn.metrics import f1_score,recall_score,precision_score
@@ -2252,7 +2252,7 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
       #   pickle.dump(clf, f)
 
       df_all.loc[numb]= [f"{model_name_5}",tn, fp, fn, tp, accuracy_5h, precision_5h,recall_5h,
-                         f1_score_5,"{:.3%}".format(auc_5),"{:.2f}".format(average_precision_5h),"{:.2f}".format(train_time_hbos)]
+                         f1_score_5h,"{:.3%}".format(auc_5h),"{:.2f}".format(average_precision_5h),"{:.2f}".format(train_time_hbos)]
 
       numb = len(df_all)+1
 
@@ -3161,14 +3161,14 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
         
     if 'HBOS' in list_of_models:
       if number_of_unique != None:
-        disp_5 = my_plot_precision_recall_curve(y_test_2, predictions_5,"XBOS")
-        average_precision_5 = metrics.average_precision_score(y_test_2, y_test_scores_xbos)
+        disp_5 = my_plot_precision_recall_curve(y_test_2, predictions_5h,"XBOS")
+        average_precision_5 = metrics.average_precision_score(y_test_2, y_test_scores_hbos)
         disp_5.ax_.set_title('2-class Precision-Recall curve')
 
 
       else:
-        disp_5 = my_plot_precision_recall_curve(y_test, predictions_5,"XBOS")
-        average_precision_5 = metrics.average_precision_score(y_test, y_test_scores_xbos)
+        disp_5 = my_plot_precision_recall_curve(y_test, predictions_5h,"XBOS")
+        average_precision_5 = metrics.average_precision_score(y_test, y_test_scores_hbos)
         disp_5.ax_.set_title('2-class Precision-Recall curve')
 
 
