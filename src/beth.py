@@ -103,10 +103,13 @@ def prepare_dataset(df: pd.DataFrame, process_args=False) -> pd.DataFrame:
 
 
 
-def beth(encoder_numeric,encoder_categoric,scaler_name,dataset_path):
+def beth(encoder_numeric,encoder_categoric,scaler_name,dataset_kaggle_path,dataset_dir):
 
   dataset_name = 'beth'
-  df= pd.read_csv("/content/beth/labelled_training_data.csv")
+  download_drive(dataset_kaggle_path,dataset_dir)
+  df= pd.read_csv(f'{dataset_dir}labelled_training_data.csv')
+  df.sample(frac= 0.2)
+  
   df = prepare_dataset(df)
   # name_target = 'evil' 
   name_target = 'sus' 
