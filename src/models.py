@@ -3260,8 +3260,8 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
       plt.plot(fpr,tpr,marker='.',label="LOF_pyod, auc="+str("{:.3%}".format(auc)))
 
     if 'CBLOF_pyod' in list_of_models:
-      fpr, tpr, thresh = metrics.roc_curve(y_test_lof, predictions_4cblof)
-      auc = metrics.roc_auc_score(y_test_lof, predictions_4cblof)
+      fpr, tpr, thresh = metrics.roc_curve(y_test_cblof, predictions_4cblof)
+      auc = metrics.roc_auc_score(y_test_cblof, predictions_4cblof)
       plt.plot(fpr,tpr,marker='.',label="CBLOF_pyod, auc="+str("{:.3%}".format(auc)))
 
     if 'XBOS' in list_of_models: 
