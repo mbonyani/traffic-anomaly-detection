@@ -1679,12 +1679,12 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
 
     if 'OCSVM_pyod' in list_of_models:
       disp_11 = my_plot_precision_recall_curve(y_test, predictions_11,"OCSVM_pyod")
-      average_precision_10 = metrics.average_precision_score(y_test, predictions_10)
+      average_precision_11 = metrics.average_precision_score(y_test, predictions_11)
       disp_11.ax_.set_title('2-class Precision-Recall curve')
 
     if 'SGDOneClassSVM' in list_of_models:
       disp_12 = my_plot_precision_recall_curve(y_test, predictions_12,"SGDOneClassSVM")
-      average_precision_10 = metrics.average_precision_score(y_test, predictions_10)
+      average_precision_12 = metrics.average_precision_score(y_test, predictions_12)
       disp_12.ax_.set_title('2-class Precision-Recall curve')
 
 
