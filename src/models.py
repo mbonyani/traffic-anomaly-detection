@@ -1405,7 +1405,7 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
       print(f"Training time: {stop - start}s")
 
       #*****************************************************
-      predictions = [round(value) for value in y_test_pred_11]
+      predictions = [round(value) for value in y_test_pred_13]
       accuracy = accuracy_score(y_test, predictions)
       #print("Accuracy: %.2f%%" % (accuracy * 100.0))
       accuracy_13 = accuracy * 100.0
