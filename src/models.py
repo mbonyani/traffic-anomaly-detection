@@ -718,7 +718,7 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
       recall_5h = np.mean(recall)
 
       # evaluate the classification_report
-      print(classification_report(y_test, predictions_5))
+      print(classification_report(y_test, predictions_5h))
 
       # evaluate the confusion_matrix
       #cf_matrix =confusion_matrix(y_test, predictions)
