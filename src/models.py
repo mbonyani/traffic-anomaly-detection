@@ -1615,7 +1615,7 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
       average_precision_4 = metrics.average_precision_score(y_test, y_test_scores_lof)
       disp_4.ax_.set_title('2-class Precision-Recall curve')
 
-    if 'LOF_pyod' in list_of_models:
+    if 'CBLOF_pyod' in list_of_models:
       disp_4 = my_plot_precision_recall_curve(y_test, predictions_4cblof,"CBLOF_pyod")
       average_precision_4 = metrics.average_precision_score(y_test, y_test_scores_cblof)
       disp_4.ax_.set_title('2-class Precision-Recall curve')
