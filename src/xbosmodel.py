@@ -30,7 +30,7 @@ class XBOS:
         
             for i in range(self.n_clusters):
                 for k in range(self.n_clusters):
-                    if i != k:
+                    if i != k and (i in list(ratio.keys()) and k in list(ratio.keys())) :
                         dist = abs(kmeans.cluster_centers_[i] - kmeans.cluster_centers_[k])/max_distance
                         effect = ratio[k]*(1/pow(self.effectiveness,dist))
                         cluster_score[i] = cluster_score[i]+effect
