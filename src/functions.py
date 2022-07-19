@@ -709,32 +709,58 @@ def auc_plot(df,name_target,contamination,number_of_unique,list_of_models,k):
 
       for j in range(len(k)):
         model_name_9 = 'LOF_sklearn'
-        # train knn detector
+
         neigh = LocalOutlierFactor(n_neighbors=k[j],novelty=True, contamination=contamination)
         start = time.time()
         neigh.fit(X_train)
 
-        # get the prediction on the test data
-        #y_test_pred_9 = neigh.predict(X_test)
+
         y_test_pred_9 = -neigh.decision_function(X_test)
         
 
-        #*****************************************************
-        #predictions = [round(value) for value in y_test_pred_9]
         predictions = y_test_pred_9
-        # for i in range(0,len(predictions)):
-        #   if predictions[i] > 0.5:
-        #     predictions[i]=1
-        #   else:
-        #     predictions[i]=0
+
 
         predictions_9_j.append(predictions)
 
-        # #AUC score
+
         auc_9 = metrics.roc_auc_score(y_test, predictions)     
         auc_9_j.append(auc_9)
 
-    #print(auc_1_j)
+    if 'CBLOF_pyod' in list_of_models:
+
+      #print('*****************************************************************LOF from sklearn lib')
+      
+      from pyod.models.cblof import CBLOF
+      import time
+
+
+      predictions_10_j = []
+      auc_10_j = []
+
+      for j in range(len(k)):
+        model_name_10 = 'CBLOF_pyod'
+
+        neigh = CBLOF(contamination= contamination,n_clusters=k[j])
+        start = time.time()
+        neigh.fit(X_train)
+
+
+        y_test_pred_9 = -neigh.decision_function(X_test)
+        
+
+        predictions = y_test_pred_9
+
+
+        predictions_10_j.append(predictions)
+
+
+        auc_9 = metrics.roc_auc_score(y_test, predictions)     
+        auc_10_j.append(auc_9)
+        
+        
+        
+
 
     if 'HBOS_pyod' in list_of_models:
       plt.plot(k,auc_1_j,marker='.',linestyle = ':',label="HBOS_pyod")
@@ -752,7 +778,9 @@ def auc_plot(df,name_target,contamination,number_of_unique,list_of_models,k):
       plt.plot(k,auc_6_j,marker='s',linestyle = 'dotted',label="KNN_sklearn")
 
     if 'LOF_sklearn' in list_of_models:
-      plt.plot(k,auc_9_j,marker='p',linestyle = 'solid',label="LOF_sklearn")      
+      plt.plot(k,auc_9_j,marker='p',linestyle = 'solid',label="LOF_sklearn") 
+    if 'CBLOF_pyod' in list_of_models:      
+      plt.plot(k,auc_10_j,marker='s',linestyle = 'solid',label="CBLOF_pyod") 
 
     plt.title('ROC-Curve')
     plt.ylabel('AUC')
