@@ -706,7 +706,7 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
       #{:.3%}".format(auc_1)
 
       # AP score
-      average_precision_5h = metrics.average_precision_score(y_test, predictions_5)
+      average_precision_5h = metrics.average_precision_score(y_test, predictions_5h)
 
       # calculate prediction,recall, f1-score
       from sklearn.metrics import f1_score,recall_score,precision_score
