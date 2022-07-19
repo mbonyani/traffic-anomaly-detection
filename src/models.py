@@ -546,12 +546,14 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
 
         model_name_5 = 'XBOS'
         #create XBOS model
+        X_train = X_train.reset_index(drop=True)
         clf = xbosmodel.XBOS(n_clusters=15,max_iter=1)
         start = time.time()
         # train XBOS model
         clf.fit(X_train)
 
         #predict model
+        X_test = X_test.reset_index(drop=True)
         y_test_pred = clf.predict(X_test)
         y_test_scores_xbos = clf.fit_predict(X_test)
         stop = time.time()
@@ -674,9 +676,11 @@ def model(dataset_name,df,name_target, n,contamination,number_of_unique,percenta
         clf = hbosmodel.HBOS()
         start = time.time()
         # train HBOS model
+        X_train = X_train.reset_index(drop=True)
         clf.fit(X_train)
 
         #predict model
+        X_test = X_test.reset_index(drop=True)
         y_test_pred = clf.predict(X_test)
         y_test_scores_hbos = clf.fit_predict(X_test)
         stop = time.time()
