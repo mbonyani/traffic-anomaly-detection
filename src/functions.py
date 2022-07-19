@@ -1538,7 +1538,7 @@ def auc_plot(df,name_target,contamination,number_of_unique,list_of_models,k):
     plt.xlabel('K')
     #plt.axis([0, 15, 0., 1.0])
     #plt.xlim(k)
-    plt.ylim([0.45, 1.05])
+    plt.ylim([0.0, 1.05])
     #plt.legend(loc=0)
     plt.legend(bbox_to_anchor=(1.04,1), loc="upper left")
     plt.show()
