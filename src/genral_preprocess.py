@@ -28,10 +28,10 @@ from termcolor import colored
 # kamel
 def genral_preprocess(encoder_numeric,encoder_categoric,scaler_name,dataset_path,name_target,dataset_name):
  
-#  dataset_name = 'general'
+
   df= pd.read_csv(dataset_path)
 
-  #name_target = 'n' 
+
   #******************************************* 
   num_row , num_column = df.shape
 
